@@ -16,6 +16,11 @@ are greater than the i'th.
 
 More generally, it is the number of places up until there are no elements
 less than or equal to the i'th in the left sub-array.
+
+Ref:
+http://www.cs.umd.edu/class/fall2009/cmsc451/lectures/Lec08-inversions.pdf
+http://www.programminggeek.in/2013/07/c-and-java-program-for-counting-number-of-inversion-in-an-array-using-naive-approach-and-divide-and-conquer-approach.html#.UwyYuNt6RxA
+http://pine.cs.yale.edu/pinewiki/OrderStatisticsTree
 '''
 
 
