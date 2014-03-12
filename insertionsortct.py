@@ -100,6 +100,25 @@ def mergeCount(l, nl, r, nr):
     return ct, sortedl
 
 
+def merge(l, nl, r, nr):
+    i = 0
+    j = 0
+    ct = 0
+    res = []
+
+    while i < nl:
+        while j < nr and r[j] < l[i]:
+            res.append(r[j])
+            ct += nl-i
+            j += 1
+
+        res.append(l[i])
+        i += 1
+
+    res.extend(r[j:])
+    return ct, res
+
+
 def inversionCount(ar, l):
     """
     Uses a merge-sort like inversion count to get the number of shifts.
@@ -108,15 +127,20 @@ def inversionCount(ar, l):
         return 0, ar
 
     if l == 2:
-        return (1, ar[::-1]) if ar[1] > ar[0] else (0, ar)
+        return (1, ar[::-1]) if ar[1] < ar[0] else (0, ar)
 
     m = l//2
     left, right = ar[:m], ar[m:]
     ct = 0
-    ctm, merged = mergeCount(leftorted, m, rightsorted, m + l%2)
-    ctl, leftsorted  = inversionCount(leftsorted, m)
-    ctr, rightsorted = inversionCount(rightsorted, m + l%2)
+
+    ctl, leftsorted  = inversionCount(left, m)
+    ctr, rightsorted = inversionCount(right, m + l%2)
+
+    ctm, merged = merge(leftsorted, m, rightsorted, m + l%2)
+
     ct += ctl + ctr + ctm
+    #print("%d %d %d" % (ctl, ctr, ctm))
+
     return ct, merged
 
 
@@ -125,8 +149,10 @@ def main():
     for t in range(T):
         m = input()
         ar = [int(i) for i in raw_input().strip().split()]
-        insertionSortCount(ar, m)
-
+        #insertionSortCount3(ar, m)
+        ct, res = inversionCount(ar, m)
+        print(ct)
+        #print(res)
 
 if __name__ == "__main__":
     main()
