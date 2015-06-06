@@ -67,12 +67,25 @@ def count_perms(vals):
     return total
 
 
+def count_perms3(vals):
+    from collections import Counter
+    cntr = Counter(vals)
+    cards = 0
+    total = 1
+    for i in range(len(vals)):
+        cards += cntr[i]
+        if cards <= i:
+            return 0
+        total = (total * (cards-i)) % 1000000007
+    return total
+
+
 def main():
     n = int(input().strip())
-    for picked in range(n):
+    for _ in range(n):
         nvals = int(input())
         vals = map(int, input().strip().split())
-        print(count_perms2(vals))
+        print(count_perms3(vals))
 
 
 def pickperm(x):
@@ -86,16 +99,22 @@ def pickperm(x):
 def test_pick():
     tests = [([0, 0, 0], 3),
              ([0, 0, 1], 2),
-             ([0, 0, 1, 1, 4], 12)
+             ([0, 0, 1, 1, 4], 12),
+             ([3, 0, 5, 0, 1, 1], 24),
+             ([5, 5, 5], 0),
+             ([1], 0)
              ]
 
     for test in tests:
-        a = pickperm(test[0])
+        # a = pickperm(test[0])
         b = count_perms2(test[0])
-        if not a == b:
-            print("ERROR: pickperm: %s, count_perms: %s" % (a, b))
+        c = count_perms3(test[0])
+        if not b == c:
+            print(("ERROR: test: %s "
+                   "count_perms2: %s, "
+                   "count_perms3: %s") % (test, b, c))
 
 
 if __name__ == "__main__":
     test_pick()
-    main()
+    # main()
