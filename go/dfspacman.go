@@ -78,9 +78,6 @@ func play(pr, pc, fr, fc int, board *[]string) {
 	pred := PredMap{}
 	pred[pacman] = nope
 
-	// set of visited nodes
-	visited := map[[2]int]bool{}
-
 	// stack of nodes
 	stack := [][2]int{}
 	stack = append(stack, pacman)
@@ -92,9 +89,6 @@ func play(pr, pc, fr, fc int, board *[]string) {
 		node := Pop(&stack)
 		a, b := node[0], node[1]
 		record = append(record, node)
-
-		// mark current node visited
-		visited[node] = true
 
 		if node == food {
 			// found, now just print predecesors from food
@@ -109,11 +103,9 @@ func play(pr, pc, fr, fc int, board *[]string) {
 		up, left, right, down := neighbors(a, b, board)
 		// for each neighbor, update pred map
 		for _, dir := range [4][2]int{up, left, right, down} {
-			_, ok := visited[dir]
+			_, ok := pred[dir]
 			if !ok && dir != nope {
 				pred[dir] = node
-				// _a, _b := dir[0], dir[1]
-				// fmt.Printf("Adding: %c\n", (*board)[_a][_b])
 				stack = append(stack, dir)
 			}
 		}
