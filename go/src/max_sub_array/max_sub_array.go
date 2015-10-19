@@ -1,18 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
-	"log"
-	"math"
+	"os"
+	"strconv"
+	// "strings"
 )
-
-type Int int64
-type IntArr []Int
-
-// type PIntArr *IntArr
-
-const MaxInt int64 = math.MaxInt64
-const MinInt int64 = math.MinInt64
 
 func newMat(r, c int) *[][]Int {
 	mat := make([][]Int, r)
@@ -52,7 +46,7 @@ func (self IntArr) sum() Int {
 
 /* Maximum-Sum Contiguous Sub-Array
  */
-func maxSubArray(arr IntArr) IntArr {
+func maxSubArray(arr IntArr) (IntArr, Int) {
 	n := len(arr)
 	mat := newMat(n, n)
 	max_idx := [2]int{0, 0}
@@ -80,7 +74,40 @@ func maxSubArray(arr IntArr) IntArr {
 
 	// printMat(mat)
 	// fmt.Printf("Max sum: %d Index: %v\n", (*mat)[max_idx[0]][max_idx[1]], max_idx)
-	return arr[max_idx[0] : max_idx[1]+1]
+	return arr[max_idx[0] : max_idx[1]+1], arr[max_idx[0] : max_idx[1]+1].sum()
+}
+
+/* Maximum-Sum Contiguous Sub-Array.
+Memory efficient array version.
+*/
+func maxSubArray2(arr IntArr) (IntArr, Int) {
+	//       We only really need 2 rows and to save the slice that contains
+	//       the max.
+	max_sum := Int(MinInt)
+
+	n := len(arr)
+	var max_arr, cur, prev IntArr
+
+	cur = make(IntArr, n) // Initialized to 0
+	prev = make(IntArr, n)
+
+	cur[n-1] = arr[n-1]
+	max_sum = cur[n-1]  // just the last element
+	max_arr = cur[n-1:] // just the last element as a 1 element slice
+	// Up from bottom
+	for i := n - 2; i >= 0; i-- {
+		copy(prev, cur)
+		// TODO: limit copy to only the required values
+		cur[i] = arr[i]
+		for j := i + 1; j < n; j++ {
+			cur[j] = cur[i] + prev[j]
+			if cur[j] > max_sum {
+				max_sum = cur[j]
+				max_arr = cur[:j+1]
+			}
+		}
+	}
+	return max_arr, max_sum
 }
 
 /* Maximum-Sum Non-Contiguous Sub-Array.
@@ -88,7 +115,7 @@ This is just all positive numbers in the array.
 If there are all negative numbers, it is just an array
 of 1 element, the largest negative number.
 */
-func maxNCSubArray(arr IntArr) IntArr {
+func maxNCSubArray(arr IntArr) (IntArr, Int) {
 	ans := make(IntArr, 0)
 	lgNeg := Int(MinInt)
 	for _, v := range arr {
@@ -103,10 +130,38 @@ func maxNCSubArray(arr IntArr) IntArr {
 	if len(ans) == 0 {
 		ans = append(ans, lgNeg)
 	}
-	return ans
+	return ans, ans.sum()
 }
 
-func main() {
+func main2() {
+	scanner := bufio.NewScanner(os.Stdin)
+	scanner.Scan() // read a line
+	t, _ := strconv.Atoi(scanner.Text())
+
+	for i := 0; i < t; i++ {
+		scanner.Scan() // read a line
+		n, _ := strconv.Atoi(scanner.Text())
+
+		arr := make(IntArr, n)
+		scanner.Split(bufio.ScanWords)
+		for j := 0; j < n; j++ {
+			scanner.Scan()
+			x, _ := strconv.Atoi(scanner.Text())
+			arr[j] = Int(x)
+		}
+		scanner.Split(bufio.ScanLines)
+		// do processing here
+		// ms_sum, mncs_sum := maxSumOfSubArray(arr)
+		// fmt.Printf("%d %d\n", ms_sum, mncs_sum)
+	}
+}
+
+/*
+// line := strings.NewReader(scanner.Text())
+// arr, _ := ReadInts(line)
+// fmt.Println(len(arr))
+
+func main1() {
 	var t, n int
 	_, err := fmt.Scanln(&t)
 	if err != nil {
@@ -120,7 +175,10 @@ func main() {
 			log.Fatal("Bad input (2)")
 		}
 		// Make the array
-		arr := make(IntArr, n)
+		// fmt.Println("making slice")
+		arr := make(IntArr, n, n)
+		// fmt.Println("made slice")
+
 		for j := 0; j < n; j++ {
 			_, err = fmt.Scan(&(arr[j]))
 			if err != nil {
@@ -129,17 +187,14 @@ func main() {
 		}
 
 		// Contiguous
-		ms := maxSubArray(arr)
+		// _, ms_sum := maxSubArray2(arr)
+		// ms_sum, mncs_sum := maxSumOfSubArray(arr)
 		// ms.printArr()
 		// Non-contiguous
-		mncs := maxNCSubArray(arr)
+		// _, mncs_sum := maxNCSubArray(arr)
 
-		fmt.Printf("%d %d\n", ms.sum(), mncs.sum())
-
+		// ms_sum, mncs_sum := maxSumOfSubArray(arr)
+		// fmt.Printf("%d %d\n", ms_sum, mncs_sum)
 	}
-	// Contiguous
-	// ms := maxSubArray([]Int{1, 2, -5, 3, 4})
-	// Non-contiguous
-	// mncs := maxNCSubArray([]Int{1, 2, -5, 3, 4})
-	// fmt.Printf("%d %d\n", ms.sum(), mncs.sum())
 }
+*/
