@@ -12,7 +12,7 @@ def max_sub_array_sum_n(arr):
     _max = max(enumerate(arr), key=lambda a: a[1])
     _max = (_max[0], _max[0], _max[1])
     if _max[2] < 0:
-        return _max
+        return _max[2], _max[2]
 
     # Prune left negatives
     while arr[0] < 0:
@@ -101,11 +101,16 @@ examples = [
     ([1, 2, -6, 1, 4, -7, 1, 3],               (3, 4), 5, 12),
     ([1, 2, -6, 1, 4, -7, 1, 2, 3],            (6, 8), 6, 14),
     ([1, 2, -6, 1, 4, -7, 8, -8, 10],          (6, 8), 10, 26),
-    ([1, 2, -6, 14, -7, 8, -8, 10],            (3, 7), 17, 35)
+    ([1, 2, -6, 14, -7, 8, -8, 10],            (3, 7), 17, 35),
+    ([1],                                      (0, 0), 1, 1),
+    ([-1],                                     (0, 0), -1, -1),
+    ([-1, -2, -3],                             (0, 0), -1, -1),
+    ([-3, -2, -1],                             (2, 2), -1, -1),
 ]
 
 def test():
     for arr, (i, j), max_sub_sum, max_tot_sum in examples:
+        # print(arr, (i, j), max_sub_sum, max_tot_sum)
         ans_sub_sum, ans_tot_sum = max_sub_array_sum_n(arr)
         # print(arr, "=>", ansi, ansj, ans_sum, "==?", i, j, max_sum)
         print(arr, "=>", ans_sub_sum, ans_tot_sum, "==?", max_sub_sum, max_tot_sum)
