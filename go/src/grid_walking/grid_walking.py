@@ -5,6 +5,7 @@
 from collections import deque, defaultdict
 from pprint import pprint
 
+MOD = 1000000007
 
 def findNumberOfPaths(position, dimensions, number_of_steps):
     """
@@ -36,7 +37,8 @@ def findNumberOfPaths(position, dimensions, number_of_steps):
             position_to_compute, steps = positions_to_compute.popleft()
             position_value = 0
             for neighbor in neighbors(position_to_compute):
-                position_value += previous_step_values[neighbor]
+                # position_value += previous_step_values[neighbor]
+                position_value = (position_value + previous_step_values[neighbor]) % MOD
                 if (steps-1) > 0:
                     positions_to_compute.append((neighbor, steps-1))
 
